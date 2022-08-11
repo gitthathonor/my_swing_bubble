@@ -1,4 +1,4 @@
-package bubble.test.ex05;
+package bubble.test.ex08;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -23,6 +23,10 @@ public class Player extends JLabel implements Moveable {
 	private boolean up;
 	private boolean down;
 	
+	// 벽에 충돌한 상태
+	private boolean leftWallCrash;
+	private boolean rightWallCrash;
+	
 	// 플레이어 속도 상태
 	private final int SPEED = 4;
 	private final int JUMPSPEED = 2; // up, down 
@@ -33,6 +37,7 @@ public class Player extends JLabel implements Moveable {
 	public Player() {
 		initObject();
 		initSetting();
+		initBackgroundPlayerService();
 	}
 
 	private void initObject() {
@@ -41,23 +46,31 @@ public class Player extends JLabel implements Moveable {
 	}
 
 	private void initSetting() {
-		x = 55;
+		x = 80;
 		y = 535;
 
 		left = false;
 		right = false;
 		up = false;
 		down = false;
+		
+		leftWallCrash = false;
+		rightWallCrash = false;
 
 		setIcon(playerR);
 		setSize(50, 50);
 		setLocation(x, y);
 	}
+	
+	private void initBackgroundPlayerService() {
+		new Thread(new BackgroundPlayerService(this)).start();
+	}
+	
 
 	// 이벤트 핸들러!
 	@Override
 	public void left() {
-		System.out.println("left");
+//		System.out.println("left");
 		left = true;
 		new Thread(() -> {
 			while (left) {
@@ -75,7 +88,7 @@ public class Player extends JLabel implements Moveable {
 
 	@Override
 	public void right() {
-		System.out.println("right");
+//		System.out.println("right");
 		right = true;
 		new Thread(() -> {
 			while (right) {
@@ -94,7 +107,7 @@ public class Player extends JLabel implements Moveable {
 	// left + up, right + up => 쓰레드를 통하지 않고는 불가능하다.
 	@Override
 	public void up() {
-		System.out.println("up");
+//		System.out.println("up");
 		up = true;
 		new Thread(() -> {
 			for(int i=0; i<130/JUMPSPEED; i++) {
@@ -115,10 +128,10 @@ public class Player extends JLabel implements Moveable {
 
 	@Override
 	public void down() {
-		System.out.println("down");
+//		System.out.println("down");
 		down = true;
 		new Thread(() -> {
-			for(int i=0; i<130/JUMPSPEED; i++) {
+			while(down) {
 				y = y + JUMPSPEED;
 				setLocation(x,y);
 				try {
