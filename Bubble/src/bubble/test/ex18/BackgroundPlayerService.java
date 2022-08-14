@@ -1,8 +1,9 @@
-package bubble.test.ex16;
+package bubble.test.ex18;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -12,9 +13,13 @@ public class BackgroundPlayerService implements Runnable {
 	
 	private BufferedImage image;
 	private Player player;
+	private List<Bubble> bubbleList;
+	
 
+	// 플레이어, 버블
 	public BackgroundPlayerService(Player player) {
-		this.player = player;                                          
+		this.player = player;
+		this.bubbleList = player.getBubbleList();
 		try {
 			image = ImageIO.read(new File("image/backgroundMapService.png"));
 		} catch (Exception e) {
@@ -25,6 +30,25 @@ public class BackgroundPlayerService implements Runnable {
 	@Override
 	public void run() {
 		while(true) {
+			
+			// 1. 버블 충돌 체크
+			for(int i=0; i<bubbleList.size(); i++) {
+				Bubble bubble = bubbleList.get(i);
+				if(bubble.getState() == 1) {
+					if((Math.abs(player.getX() - bubble.getX()) < 10) && 
+							(Math.abs(player.getY() - bubble.getY()) > 0 && Math.abs(player.getY() - bubble.getY()) < 50)) {
+						System.out.println("적군 사살 완료");
+						bubble.clearBubbled();
+						break;
+					}
+				}
+			}
+			
+			
+			// 2. 벽 충돌 체크
+			
+			
+			
 			// 색상 확인
 			Color leftColor = new Color(image.getRGB(player.getX() - 10, player.getY()+ 25));
 			Color rightColor = new Color(image.getRGB(player.getX() + 50 + 15, player.getY() + 25));

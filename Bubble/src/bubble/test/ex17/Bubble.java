@@ -1,4 +1,4 @@
-package bubble.test.ex16;
+package bubble.test.ex17;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -174,6 +174,25 @@ public class Bubble extends JLabel implements Moveable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	
+	// bubbled를 clear하는 메서드
+	// 호출 때문에 public
+	public void clearBubbled() {
+		new Thread(() -> {
+			System.out.println("clearBubbled");
+			try {
+				up = false;
+				setIcon(bomb);
+				Thread.sleep(1000);
+				mContext.remove(this);
+				mContext.repaint();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}).start();
+		
 	}
 
 }
